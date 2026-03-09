@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NutriSport - Reverb Websocket Test</title>
+    <!-- Inclure le client Pusher officiel (Reverb est compatible API Pusher) -->
+    <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+    <style>
+        body {
+            font-family: system-ui, sans-serif;
+            padding: 20px;
+            background: #f4f4f5;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #18181b;
+        }
+
+        .log-box {
+            background: #1e293b;
+            color: #10b981;
+            padding: 15px;
+            border-radius: 6px;
+            height: 400px;
+            overflow-y: auto;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+
+        .status {
+            padding: 8px 12px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .disconnected {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .connected {
+            background: #dcfce7;
+            color: #166534;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🎙️ Test WebSocket (Laravel Reverb)</h1>
+        <div id="connection-status" class="status disconnected">Déconnecté</div>
+
+        <h3>🔌 Journal d'événements :</h3>
+        <p><i>Écoute sur le canal public : <code>backoffice</code> | Événement : <code>order.placed</code></i></p>
+        <div id="logs" class="log-box">En attente de connexion...</div>
+    </div>
+
+    <script>
+        const logsContainer = document.getElementById('logs');
+        const statusBadge = document.getElementById('connection-status');
+
+        function appendLog(message, isJson = false) {
+            const time = new Date().toLocaleTimeString();
+            const text = isJson ? JSON.stringify(message, null, 2) : message;
+            logsContainer.innerHTML += `\n[${time}] ${text}`;
+            logsContainer.scrollTop = logsContainer.scrollHeight;
+        }
+
+        // Active les logs internes de Pusher pour le débogage
+        Pusher.logToConsole = true;
+
+        // Configuration pour se connecter à Reverb sur le port 8080
+        const pusher = new Pusher('nutrisport_key', {
+            wsHost: 'localhost',
+            wsPort: 6001,
+            wssPort: 6001,
+            forceTLS: false,
+            disableStats: true,
+            enabledTransports: ['ws', 'wss'],
+            cluster: 'mt1' // Pusher default
+        });
+
+        // Gestion des états de connexion
+        pusher.connection.bind('state_change', function (states) {
+            if (states.current === 'connected') {
+                statusBadge.textContent = "Connecté à Reverb ! ✅";
+                statusBadge.className = "status connected";
+                appendLog("✅ WebSocket connecté avec succès.");
+            } else {
+                statusBadge.textContent = "Reconnexion / Déconnecté";
+                statusBadge.className = "status disconnected";
+                appendLog(`⚠️ État du WebSocket : ${states.current}`);
+            }
+        });
+
+        // S'abonner au canal décrit dans OrderPlaced.php
+        const channel = pusher.subscribe('backoffice');
+
+        channel.bind('pusher:subscription_succeeded', function () {
+            appendLog("🎧 Abonné avec succès au canal 'backoffice'. Prêt à recevoir des commandes !");
+        });
+
+        // Écouter l'événement spécifique
+        channel.bind('order.placed', function (data) {
+            appendLog("🟢 NOUVELLE COMMANDE REÇUE EN TEMPS RÉEL !");
+            appendLog(data, true);
+            appendLog("--------------------------------------------------");
+        });
+    </script>
+</body>
+
+</html>
