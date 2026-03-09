@@ -142,10 +142,16 @@ class OrderController extends Controller
 
     private function formatOrder(Order $order): array
     {
+        $devise = match ($order->site->code ?? 'fr') {
+            'it' => 'EUR',
+            'be' => 'CHF',
+            default => 'EUR',
+        };
+
         return [
             'id'                 => $order->id,
             'total'              => (float) $order->total,
-            'devise'             => 'EUR',
+            'devise'             => $devise,
             'status'             => $order->status,
             'payment_method'     => $order->payment_method,
             'shipping_full_name' => $order->shipping_full_name,

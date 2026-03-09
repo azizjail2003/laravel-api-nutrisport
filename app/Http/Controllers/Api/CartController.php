@@ -115,6 +115,12 @@ class CartController extends Controller
         $items = [];
         $total = 0;
 
+        $devise = match ($site->code ?? 'fr') {
+            'it' => 'EUR',
+            'be' => 'CHF',
+            default => 'EUR',
+        };
+
         foreach ($cart as $productId => $entry) {
             if (!is_int($productId) && !is_string($productId)) {
                 dd('Invalid productId type in cart cache:', gettype($productId), $productId, $cart);
@@ -133,13 +139,13 @@ class CartController extends Controller
                 'product_id' => $product->id,
                 'nom'        => $product->name,
                 'prix'       => $price,
-                'devise'     => 'EUR',
+                'devise'     => $devise,
                 'quantite'   => $entry['quantity'],
                 'sous_total' => $subtotal,
                 'en_stock'   => $product->isInStock(),
             ];
         }
 
-        return ['items' => $items, 'total' => round($total, 2), 'devise' => 'EUR'];
+        return ['items' => $items, 'total' => round($total, 2), 'devise' => $devise];
     }
 }

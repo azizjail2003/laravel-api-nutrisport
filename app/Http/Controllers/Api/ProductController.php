@@ -16,7 +16,7 @@ class ProductController extends Controller
 
         $products = Product::with(['prices' => fn($q) => $q->where('site_id', $site->id)])
             ->get()
-            ->map(fn($product) => $this->formatProduct($product, $site->id));
+            ->map(fn($product) => $this->formatProduct($product, $site->id, $site->code));
 
         return response()->json($products);
     }
@@ -29,18 +29,24 @@ class ProductController extends Controller
         $product = Product::with(['prices' => fn($q) => $q->where('site_id', $site->id)])
             ->findOrFail($id);
 
-        return response()->json($this->formatProduct($product, $site->id));
+        return response()->json($this->formatProduct($product, $site->id, $site->code));
     }
 
-    private function formatProduct($product, int $siteId): array
+    private function formatProduct($product, int $siteId, string $siteCode = 'fr'): array
     {
         $priceModel = $product->prices->first();
+
+        $devise = match ($siteCode) {
+            'it' => 'EUR',
+            'be' => 'CHF',
+            default => 'EUR',
+        };
 
         return [
             'id'          => $product->id,
             'nom'         => $product->name,
             'prix'        => $priceModel ? (float) $priceModel->price : null,
-            'devise'      => 'EUR',
+            'devise'      => $devise,
             'en_stock'    => $product->isInStock(),
             'stock'       => $product->stock,
         ];

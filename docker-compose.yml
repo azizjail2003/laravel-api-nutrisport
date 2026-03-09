@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  # ── MySQL ──────────────────────────────────────────────────────────────────
+  mysql:
+    image: mysql:8.0
+    container_name: nutrisport-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: nutrisport
+      MYSQL_USER: nutri_user
+      MYSQL_PASSWORD: nutri_password
+    ports:
+      - "3307:3306"
+    volumes:
+      - nutrisport_mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "nutri_user", "-pnutri_password"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+
+  # ── PHP-FPM Laravel App ────────────────────────────────────────────────────
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nutrisport-app
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - .:/var/www
+      - /var/www/vendor  # anonymous volume to keep the container's vendor dir
+    environment:
+      APP_ENV: local
+      APP_DEBUG: "true"
+      APP_KEY: ${APP_KEY}
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_DATABASE: nutrisport
+      DB_USERNAME: nutri_user
+      DB_PASSWORD: nutri_password
+      CACHE_STORE: database
+      QUEUE_CONNECTION: database
+      JWT_SECRET: ${JWT_SECRET}
+      MAIL_MAILER: log
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  # ── Nginx ──────────────────────────────────────────────────────────────────
+  nginx:
+    image: nginx:alpine
+    platform: linux/arm64
+    container_name: nutrisport-nginx
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+
+volumes:
+  nutrisport_mysql_data:
