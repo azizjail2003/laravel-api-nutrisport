@@ -116,6 +116,9 @@ class CartController extends Controller
         $total = 0;
 
         foreach ($cart as $productId => $entry) {
+            if (!is_int($productId) && !is_string($productId)) {
+                dd('Invalid productId type in cart cache:', gettype($productId), $productId, $cart);
+            }
             $product = $products[$productId] ?? null;
             if (!$product) {
                 continue;

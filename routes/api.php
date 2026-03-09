@@ -25,7 +25,7 @@ Route::get('/feeds/{format}', [FeedController::class, 'serve'])
     ->where('format', 'json|xml');
 
 // ── Site-scoped routes ────────────────────────────────────────────────────
-Route::prefix('api/{site}')
+Route::prefix('{site}')
     ->middleware('resolve.site')
     ->group(function () {
 
@@ -58,7 +58,7 @@ Route::prefix('api/{site}')
     });
 
 // ── BackOffice Routes ─────────────────────────────────────────────────────
-Route::prefix('api/backoffice')->group(function () {
+Route::prefix('backoffice')->group(function () {
 
     // Auth (no guard)
     Route::post('login',  [AgentAuthController::class, 'login']);
