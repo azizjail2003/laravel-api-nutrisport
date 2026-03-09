@@ -1,0 +1,1560 @@
+{
+    "info": {
+        "name": "NutriSport API — Complete Collection",
+        "description": "Full test collection for the Nutriweb Technical Test Laravel API.\n\nBase URL: http://localhost:8080\n\nRun requests in order within each folder. Login requests auto-save tokens to collection variables.",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost:8080",
+            "type": "string"
+        },
+        {
+            "key": "site",
+            "value": "fr",
+            "type": "string"
+        },
+        {
+            "key": "frontend_token",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "agent_token",
+            "value": "",
+            "type": "string"
+        }
+    ],
+    "item": [
+        {
+            "name": "1. Frontend Auth",
+            "item": [
+                {
+                    "name": "1.1 Register (FR)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "var j = pm.response.json();",
+                                    "if (j.access_token) pm.collectionVariables.set('frontend_token', j.access_token);",
+                                    "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                                    "pm.test('Has access_token', () => pm.expect(j.access_token).to.be.a('string'));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/fr/register"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n  \"name\": \"Jean Dupont\",\n  \"email\": \"jean@nutrisport.fr\",\n  \"password\": \"password\",\n  \"password_confirmation\": \"password\"\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "1.2 Login (FR)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "var j = pm.response.json();",
+                                    "if (j.access_token) pm.collectionVariables.set('frontend_token', j.access_token);",
+                                    "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                                    "pm.test('Has access_token', () => pm.expect(j.access_token).to.be.a('string'));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/fr/login"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n  \"email\": \"jean@nutrisport.fr\",\n  \"password\": \"password\"\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "1.3 Login — Wrong Password (expect 401)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status 401', () => pm.response.to.have.status(401));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/fr/login"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n  \"email\": \"jean@nutrisport.fr\",\n  \"password\": \"wrongpassword\"\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "1.4 Get Profile (me)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                                    "pm.test('Has id and email', () => { var j = pm.response.json(); pm.expect(j.id).to.be.a('number'); pm.expect(j.email).to.be.a('string'); });"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{frontend_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/fr/me"
+                        }
+                    }
+                },
+                {
+                    "name": "1.5 Update Profile",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status 200', () => pm.response.to.have.status(200));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{frontend_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/fr/profile"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n  \"name\": \"Jean Updated\",\n  \"email\": \"jean@nutrisport.fr\"\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "1.6 Logout",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status 200', () => pm.response.to.have.status(200));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{frontend_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/fr/logout"
+                        }
+                    }
+                },
+                {
+                    "name": "1.7 Protected Route Without Token (expect 401)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status 401', () => pm.response.to.have.status(401));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/fr/me"
+                        }
+                    }
+                },
+                {
+                    "name": "1.8 Register (IT)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status 200', () => pm.response.to.have.status(200));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/it/register"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n  \"name\": \"Marco Rossi\",\n  \"email\": \"marco@nutrisport.it\",\n  \"password\": \"password\",\n  \"password_confirmation\": \"password\"\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "1.9 Login (IT) — re-login FR for further tests",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "var j = pm.response.json();",
+                                    "if (j.access_token) pm.collectionVariables.set('frontend_token', j.access_token);",
+                                    "pm.test('Status 200', () => pm.response.to.have.status(200));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/fr/login"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n  \"email\": \"jean@nutrisport.fr\",\n  \"password\": \"password\"\n}"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "2. Catalog",
+            "item": [
+                {
+                    "name": "2.1 List Products (FR — EUR)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                                    "pm.test('Returns array', () => pm.expect(pm.response.json()).to.be.an('array'));",
+                                    "pm.test('Currency is EUR', () => pm.expect(pm.response.json()[0].devise).to.equal('EUR'));",
+                                    "pm.collectionVariables.set('product_id', pm.response.json()[0].id);"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/fr/products"
+                        }
+                    }
+                },
+                {
+                    "name": "2.2 List Products (IT — EUR, different price)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                                    "pm.test('Currency is EUR', () => pm.expect(pm.response.json()[0].devise).to.equal('EUR'));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/it/products"
+                        }
+                    }
+                },
+                {
+                    "name": "2.3 List Products (BE — CHF)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                                    "pm.test('Currency is CHF', () => pm.expect(pm.response.json()[0].devise).to.equal('CHF'));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/be/products"
+                        }
+                    }
+                },
+                {
+                    "name": "2.4 Get Product Detail",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                                    "pm.test('Has id and nom', () => { var j = pm.response.json(); pm.expect(j.id).to.be.a('number'); pm.expect(j.nom).to.be.a('string'); });"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/fr/products/1"
+                        }
+                    }
+                },
+                {
+                    "name": "2.5 Invalid Site (expect 404)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status 404', () => pm.response.to.have.status(404));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/xx/products"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "3. Cart",
+            "item": [
+                {
+                    "name": "3.1 View Empty Cart",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                                    "pm.test('Items is empty array', () => pm.expect(pm.response.json().items).to.be.an('array').that.is.empty);"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "X-Cart-Token",
+                                "value": "postman-test-fr"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/fr/cart"
+                        }
+                    }
+                },
+                {
+                    "name": "3.2 Add Product to Cart",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                                    "var j = pm.response.json();",
+                                    "pm.test('Cart has items', () => pm.expect(j.cart.items.length).to.be.above(0));",
+                                    "pm.test('FR currency = EUR', () => pm.expect(j.cart.devise).to.equal('EUR'));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "X-Cart-Token",
+                                "value": "postman-test-fr"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/fr/cart"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n  \"product_id\": 1,\n  \"quantity\": 2\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "3.3 Add Same Product Again (qty accumulates)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                                    "pm.test('Quantity is now 3', () => pm.expect(pm.response.json().cart.items[0].quantite).to.equal(3));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "X-Cart-Token",
+                                "value": "postman-test-fr"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/fr/cart"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n  \"product_id\": 1,\n  \"quantity\": 1\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "3.4 Add Product — Validation Error (expect 422)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status 422', () => pm.response.to.have.status(422));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "X-Cart-Token",
+                                "value": "postman-test-fr"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/fr/cart"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n  \"product_id\": \"abc\",\n  \"quantity\": -1\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "3.5 View Cart (FR)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                                    "pm.test('Has items', () => pm.expect(pm.response.json().items.length).to.be.above(0));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "X-Cart-Token",
+                                "value": "postman-test-fr"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/fr/cart"
+                        }
+                    }
+                },
+                {
+                    "name": "3.6 Remove Item from Cart",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                                    "pm.test('Cart is now empty', () => pm.expect(pm.response.json().cart.items).to.be.an('array').that.is.empty);"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "X-Cart-Token",
+                                "value": "postman-test-fr"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/fr/cart/1"
+                        }
+                    }
+                },
+                {
+                    "name": "3.7 Add Multiple Products for Clear Test",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "X-Cart-Token",
+                                "value": "postman-test-fr"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/fr/cart"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n  \"product_id\": 2,\n  \"quantity\": 1\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "3.8 Clear Cart",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                                    "pm.test('Cart cleared', () => pm.expect(pm.response.json().cart.items).to.be.an('array').that.is.empty);"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "X-Cart-Token",
+                                "value": "postman-test-fr"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/fr/cart"
+                        }
+                    }
+                },
+                {
+                    "name": "3.9 Cart — BE Site (CHF currency)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                                    "pm.test('BE currency = CHF', () => pm.expect(pm.response.json().cart.devise).to.equal('CHF'));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "X-Cart-Token",
+                                "value": "postman-test-be"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/be/cart"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n  \"product_id\": 1,\n  \"quantity\": 1\n}"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "4. Orders (auth required)",
+            "item": [
+                {
+                    "name": "4.1 Add Item to Cart (pre-order)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{frontend_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/fr/cart"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n  \"product_id\": 1,\n  \"quantity\": 2\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "4.2 Place Order",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                                    "var j = pm.response.json();",
+                                    "pm.test('Has order id', () => pm.expect(j.id).to.be.a('number'));",
+                                    "pm.test('Status is pending', () => pm.expect(j.status).to.equal('pending'));",
+                                    "pm.test('Currency EUR', () => pm.expect(j.devise).to.equal('EUR'));",
+                                    "pm.test('Has contenu', () => pm.expect(j.contenu.length).to.be.above(0));",
+                                    "pm.collectionVariables.set('order_id', j.id);"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{frontend_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/fr/orders"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n  \"shipping_full_name\": \"Jean Dupont\",\n  \"shipping_address\": \"10 Rue de la Paix\",\n  \"shipping_city\": \"Paris\",\n  \"shipping_country\": \"France\"\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "4.3 Cart Empty After Order",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                                    "pm.test('Cart is empty after order', () => pm.expect(pm.response.json().items).to.be.an('array').that.is.empty);"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{frontend_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/fr/cart"
+                        }
+                    }
+                },
+                {
+                    "name": "4.4 Order with Empty Cart (expect 422)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status 422', () => pm.response.to.have.status(422));",
+                                    "pm.test('Empty cart message', () => pm.expect(pm.response.json().message).to.include('vide'));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{frontend_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/fr/orders"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n  \"shipping_full_name\": \"T\",\n  \"shipping_address\": \"T\",\n  \"shipping_city\": \"T\",\n  \"shipping_country\": \"T\"\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "4.5 Order Without Auth (expect 401)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status 401', () => pm.response.to.have.status(401));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/fr/orders"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n  \"shipping_full_name\": \"T\",\n  \"shipping_address\": \"T\",\n  \"shipping_city\": \"T\",\n  \"shipping_country\": \"T\"\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "4.6 Order History",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                                    "pm.test('Returns array', () => pm.expect(pm.response.json()).to.be.an('array'));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{frontend_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/fr/orders"
+                        }
+                    }
+                },
+                {
+                    "name": "4.7 Order Detail",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                                    "var j = pm.response.json();",
+                                    "pm.test('Has contenu', () => pm.expect(j.contenu).to.be.an('array').with.length.above(0));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{frontend_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/fr/orders/{{order_id}}"
+                        }
+                    }
+                },
+                {
+                    "name": "4.8 Order Validation Missing Fields (expect 422)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status 422', () => pm.response.to.have.status(422));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{frontend_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/fr/orders"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{}"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "5. BackOffice",
+            "item": [
+                {
+                    "name": "5.1 Login — SuperAdmin (Agent ID=1)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "var j = pm.response.json();",
+                                    "if (j.access_token) pm.collectionVariables.set('agent_token', j.access_token);",
+                                    "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                                    "pm.test('Has access_token', () => pm.expect(j.access_token).to.be.a('string'));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/backoffice/login"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n  \"email\": \"admin@nutrisport.fr\",\n  \"password\": \"password\"\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "5.2 Login — Wrong Agent Password (expect 401)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status 401', () => pm.response.to.have.status(401));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/backoffice/login"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n  \"email\": \"admin@nutrisport.fr\",\n  \"password\": \"wrongpassword\"\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "5.3 Get Orders — SuperAdmin (expect 200)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status 200', () => pm.response.to.have.status(200));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{agent_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/backoffice/orders"
+                        }
+                    }
+                },
+                {
+                    "name": "5.4 Create Product — SuperAdmin (expect 201)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                                    "pm.test('Has id', () => pm.expect(pm.response.json().id).to.be.a('number'));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{agent_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/backoffice/products"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n  \"nom\": \"Vitamine D3 Premium\",\n  \"stock\": 100,\n  \"prices\": {\n    \"fr\": 12.99,\n    \"it\": 13.99,\n    \"be\": 15.50\n  }\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "5.5 Login — Orders Agent",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "var j = pm.response.json();",
+                                    "if (j.access_token) pm.collectionVariables.set('agent_token', j.access_token);",
+                                    "pm.test('Status 200', () => pm.response.to.have.status(200));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/backoffice/login"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n  \"email\": \"commandes@nutrisport.fr\",\n  \"password\": \"password\"\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "5.6 Orders Agent — Get Orders (expect 200)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Orders agent CAN view orders', () => pm.response.to.have.status(200));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{agent_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/backoffice/orders"
+                        }
+                    }
+                },
+                {
+                    "name": "5.7 Orders Agent — Create Product (expect 403)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Orders agent CANNOT create products', () => pm.response.to.have.status(403));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{agent_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/backoffice/products"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n  \"nom\": \"Test\",\n  \"stock\": 1,\n  \"prices\": { \"fr\": 1, \"it\": 1, \"be\": 1 }\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "5.8 Login — Catalog Agent",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "var j = pm.response.json();",
+                                    "if (j.access_token) pm.collectionVariables.set('agent_token', j.access_token);",
+                                    "pm.test('Status 200', () => pm.response.to.have.status(200));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/backoffice/login"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n  \"email\": \"catalogue@nutrisport.fr\",\n  \"password\": \"password\"\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "5.9 Catalog Agent — Create Product (expect 201)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Catalog agent CAN create products', () => pm.response.to.have.status(201));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{agent_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/backoffice/products"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n  \"nom\": \"Oméga-3 Catalogue\",\n  \"stock\": 30,\n  \"prices\": {\n    \"fr\": 9.99,\n    \"it\": 10.99,\n    \"be\": 12.00\n  }\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "5.10 Catalog Agent — Get Orders (expect 403)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Catalog agent CANNOT view orders', () => pm.response.to.have.status(403));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{agent_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/backoffice/orders"
+                        }
+                    }
+                },
+                {
+                    "name": "5.11 No Token — Get Orders (expect 401)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status 401', () => pm.response.to.have.status(401));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/backoffice/orders"
+                        }
+                    }
+                },
+                {
+                    "name": "5.12 BO Logout",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status 200', () => pm.response.to.have.status(200));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{agent_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/backoffice/logout"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "6. Catalog Feeds",
+            "item": [
+                {
+                    "name": "6.1 JSON Feed",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                                    "pm.test('Returns array', () => pm.expect(pm.response.json()).to.be.an('array'));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/feeds/json"
+                        }
+                    }
+                },
+                {
+                    "name": "6.2 XML Feed",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                                    "pm.test('Contains XML', () => pm.expect(pm.response.text()).to.include('<'));"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/feeds/xml"
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}

@@ -30,7 +30,7 @@ class BackOfficeController extends Controller
                 'nom_client'   => $order->user->name ?? '—',
                 'site'         => $order->site->code ?? '—',
                 'total'        => (float) $order->total,
-                'devise'       => 'EUR',
+                'devise'       => clone $order->site ? match ($order->site->code) { 'be' => 'CHF', default => 'EUR' } : 'EUR',
                 'status'       => $order->status,
                 'reste_a_payer'=> $order->status === 'paid' ? 0 : (float) $order->total,
                 'created_at'   => $order->created_at,
@@ -52,22 +52,23 @@ class BackOfficeController extends Controller
     public function createProduct(Request $request): JsonResponse
     {
         $request->validate([
-            'name'         => 'required|string|max:255',
+            'nom'          => 'required|string|max:255',
             'stock'        => 'required|integer|min:0',
             'prices'       => 'required|array',
-            'prices.*.site_id' => 'required|exists:sites,id',
-            'prices.*.price'   => 'required|numeric|min:0',
+            'prices.*'     => 'numeric|min:0',
         ]);
 
         $product = Product::create([
-            'name'  => $request->name,
+            'name'  => $request->nom,
             'stock' => $request->stock,
         ]);
 
-        foreach ($request->prices as $priceData) {
+        $sites = Site::whereIn('code', array_keys($request->prices))->get();
+
+        foreach ($sites as $site) {
             ProductPrice::updateOrCreate(
-                ['product_id' => $product->id, 'site_id' => $priceData['site_id']],
-                ['price' => $priceData['price']]
+                ['product_id' => $product->id, 'site_id' => $site->id],
+                ['price' => $request->prices[$site->code]]
             );
         }
 
@@ -77,7 +78,7 @@ class BackOfficeController extends Controller
             'message' => 'Produit créé avec succès.',
             'product' => [
                 'id'     => $product->id,
-                'name'   => $product->name,
+                'nom'    => $product->name,
                 'stock'  => $product->stock,
                 'prices' => $product->prices->map(fn($p) => [
                     'site'  => $p->site->code,

@@ -13,16 +13,32 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 | API Routes — NutriSport
 |--------------------------------------------------------------------------
-|
-| Site-scoped routes: /api/{site}/...  where {site} ∈ {fr, it, be}
-| BackOffice routes:  /api/backoffice/...
-| Public feeds:       /feeds/{format}
-|
 */
 
 // ── Public Catalog Feeds ─────────────────────────────────────────────────
 Route::get('/feeds/{format}', [FeedController::class, 'serve'])
     ->where('format', 'json|xml');
+
+// ── BackOffice Routes ─────────────────────────────────────────────────────
+Route::prefix('backoffice')->group(function () {
+
+    // Auth (no guard)
+    Route::post('login',  [AgentAuthController::class, 'login']);
+
+    // Authenticated agent routes
+    Route::middleware('auth:api_agent')->group(function () {
+        Route::post('logout', [AgentAuthController::class, 'logout']);
+        Route::get('me',      [AgentAuthController::class, 'me']);
+
+        // Orders — requires 'view_orders' permission
+        Route::get('orders', [BackOfficeController::class, 'orders'])
+            ->middleware('agent.permission:view_orders');
+
+        // Products — requires 'create_products' permission
+        Route::post('products', [BackOfficeController::class, 'createProduct'])
+            ->middleware('agent.permission:create_products');
+    });
+});
 
 // ── Site-scoped routes ────────────────────────────────────────────────────
 Route::prefix('{site}')
@@ -56,24 +72,3 @@ Route::prefix('{site}')
             Route::post('orders',     [OrderController::class, 'store']);
         });
     });
-
-// ── BackOffice Routes ─────────────────────────────────────────────────────
-Route::prefix('backoffice')->group(function () {
-
-    // Auth (no guard)
-    Route::post('login',  [AgentAuthController::class, 'login']);
-
-    // Authenticated agent routes
-    Route::middleware('auth:api_agent')->group(function () {
-        Route::post('logout', [AgentAuthController::class, 'logout']);
-        Route::get('me',      [AgentAuthController::class, 'me']);
-
-        // Orders — requires 'view_orders' permission
-        Route::get('orders', [BackOfficeController::class, 'orders'])
-            ->middleware('agent.permission:view_orders');
-
-        // Products — requires 'create_products' permission
-        Route::post('products', [BackOfficeController::class, 'createProduct'])
-            ->middleware('agent.permission:create_products');
-    });
-});

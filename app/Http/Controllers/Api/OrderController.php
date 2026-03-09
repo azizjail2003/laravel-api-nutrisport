@@ -16,10 +16,11 @@ class OrderController extends Controller
 {
     public function index(): JsonResponse
     {
+
         /** @var \App\Models\User $user */
         $user = auth('api')->user();
 
-        $orders = Order::with('items.product')
+        $orders = Order::with(['items.product', 'site'])
             ->where('user_id', $user->id)
             ->latest()
             ->get()
@@ -28,12 +29,13 @@ class OrderController extends Controller
         return response()->json($orders);
     }
 
-    public function show(int $id): JsonResponse
+    public function show(string $site, int $id): JsonResponse
     {
+
         /** @var \App\Models\User $user */
         $user = auth('api')->user();
 
-        $order = Order::with('items.product')
+        $order = Order::with(['items.product', 'site'])
             ->where('user_id', $user->id)
             ->findOrFail($id);
 
