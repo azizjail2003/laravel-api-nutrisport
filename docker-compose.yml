@@ -64,5 +64,22 @@ services:
     depends_on:
       - app
 
+  # ── phpMyAdmin ─────────────────────────────────────────────────────────────
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: nutrisport-phpmyadmin
+    restart: unless-stopped
+    ports:
+      - "9090:80"
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_USER: nutri_user
+      PMA_PASSWORD: nutri_password
+      MYSQL_ROOT_PASSWORD: root
+    depends_on:
+      mysql:
+        condition: service_healthy
+
 volumes:
   nutrisport_mysql_data:
