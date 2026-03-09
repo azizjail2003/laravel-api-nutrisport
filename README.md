@@ -73,22 +73,33 @@ Toutes les routes publiques clients sont préfixées par `/api/{site}` où `{sit
 ### Authentification & Profil Client
 - `POST /api/{site}/register` : Créer un compte.
 - `POST /api/{site}/login` : Obtenir un jeton JWT.
+- `POST /api/{site}/logout` : Se déconnecter et révoquer le jeton JWT *(Auth requise)*.
 - `GET  /api/{site}/me` : Consulter son profil *(Auth requise)*.
-- `PUT  /api/{site}/profile` : Mettre à jour ses informations personnelles.
+- `PUT  /api/{site}/profile` : Mettre à jour ses informations personnelles *(Auth requise)*.
 
 ### Catalogue & Panier (Accès Libre)
 - `GET  /api/{site}/products` : Parcourir le catalogue (prix alignés sur la devise du site).
+- `GET  /api/{site}/products/{id}` : Consulter les détails d'un produit spécifique.
 - `GET  /api/{site}/cart` : Afficher le contenu du panier.
 - `POST /api/{site}/cart` : Ajouter un article `{ "product_id": 1, "quantity": 1 }`.
+- `DELETE /api/{site}/cart/{productId}` : Retirer un article spécifique du panier.
+- `DELETE /api/{site}/cart` : Vider complètement le panier.
 
 ### Commandes
+- `GET  /api/{site}/orders` : Lister l'historique de ses commandes *(Auth requise)*.
 - `POST /api/{site}/orders` : Transformer son panier en commande *(Auth requise)*.
-- `GET  /api/{site}/orders/{id}` : Détails d'une session d'achat *(Auth requise)*.
+- `GET  /api/{site}/orders/{id}` : Détails d'une session d'achat spécifique *(Auth requise)*.
+
+### Flux de Données Publics (Feeds)
+- `GET /api/feeds/json` : Exporter le catalogue au format JSON.
+- `GET /api/feeds/xml` : Exporter le catalogue au format XML.
 
 ### BackOffice (Agents administratifs)
 Routes situées sous `/api/backoffice/`.
 
 - `POST /login` : Authentification agent.
+- `POST /logout` : Déconnexion de l'agent *(Auth requise)*.
+- `GET  /me` : Consulter le profil de l'agent connecté *(Auth requise)*.
 - `GET  /orders` : Historique des 5 derniers jours *(Permission : view_orders)*.
 - `POST /products` : Ajout d'une nouvelle référence avec grilles de prix multiples *(Permission : create_products)*.
 
@@ -124,3 +135,12 @@ L'application respecte les conventions Laravel, tout en structurant les élémen
 - `app/Mail/` : Scénarios asynchrones pour l'envoi des confirmations de commande.
 - `app/Feeds/` : Gestionnaires des drivers XML/JSON pour nos exports partenaires.
 - `docker/nginx/default.conf` : Bloc de routage Web côté conteneur Nginx.
+
+---
+
+## 👨‍💻 Développeur
+
+Développé par **Abdelaziz Jail**.
+
+- ✉️ **Email** : [jailabdelaziz@icloud.com](mailto:jailabdelaziz@icloud.com)
+- 🌐 **Portfolio** : [https://jailabdelaziz.online/](https://jailabdelaziz.online/)
