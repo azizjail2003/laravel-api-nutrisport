@@ -115,11 +115,7 @@ class CartController extends Controller
         $items = [];
         $total = 0;
 
-        $devise = match ($site->code ?? 'fr') {
-            'it' => 'EUR',
-            'be' => 'CHF',
-            default => 'EUR',
-        };
+        $devise = 'EUR';
 
         foreach ($cart as $productId => $entry) {
             if (!is_int($productId) && !is_string($productId)) {

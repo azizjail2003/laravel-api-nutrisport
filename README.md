@@ -12,7 +12,7 @@
 
 ## 🚀 Fonctionnalités Principales
 
-- **Architecture Multi-Sites** : Support natif pour plusieurs pays (France, Italie, Belgique) avec gestion dynamique des devises (EUR, CHF) et des tarifs spécifiques par pays.
+- **Architecture Multi-Sites** : Support natif pour plusieurs pays (France, Italie, Belgique). Les utilisateurs ne sont pas partagés entre les sites, la devise et la langue sont uniformisées (Euro, Français).
 - **Catalogue & Panier** : Listing public des produits et gestion de panier avec persistance via Redis/Cache (durée de vie : 3 jours).
 - **Prise de Commandes** : Processus d'achat sécurisé, génération de tickets, décrémentation des stocks (`lockForUpdate`), envois d'emails asynchrones et notifications en temps réel (via Laravel Reverb / Pusher).
 - **Authentification JWT Intégrale** : Accès sécurisés via JSON Web Tokens, séparant les clients (Frontend, TTL 6h) et les agents (BackOffice, TTL 8h).
@@ -78,7 +78,7 @@ Toutes les routes publiques clients sont préfixées par `/api/{site}` où `{sit
 - `PUT  /api/{site}/profile` : Mettre à jour ses informations personnelles *(Auth requise)*.
 
 ### Catalogue & Panier (Accès Libre)
-- `GET  /api/{site}/products` : Parcourir le catalogue (prix alignés sur la devise du site).
+- `GET  /api/{site}/products` : Parcourir le catalogue (prix spécifiques au site).
 - `GET  /api/{site}/products/{id}` : Consulter les détails d'un produit spécifique.
 - `GET  /api/{site}/cart` : Afficher le contenu du panier.
 - `POST /api/{site}/cart` : Ajouter un article `{ "product_id": 1, "quantity": 1 }`.

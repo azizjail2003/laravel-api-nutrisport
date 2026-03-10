@@ -30,7 +30,7 @@ class BackOfficeController extends Controller
                 'nom_client'   => $order->user->name ?? '—',
                 'site'         => $order->site->code ?? '—',
                 'total'        => (float) $order->total,
-                'devise'       => clone $order->site ? match ($order->site->code) { 'be' => 'CHF', default => 'EUR' } : 'EUR',
+                'devise'       => 'EUR',
                 'status'       => $order->status,
                 'reste_a_payer'=> $order->status === 'paid' ? 0 : (float) $order->total,
                 'created_at'   => $order->created_at,

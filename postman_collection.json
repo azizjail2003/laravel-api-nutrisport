@@ -401,7 +401,7 @@
                     }
                 },
                 {
-                    "name": "2.3 List Products (BE — CHF)",
+                    "name": "2.3 List Products (BE)",
                     "event": [
                         {
                             "listen": "test",
@@ -409,7 +409,7 @@
                                 "type": "text/javascript",
                                 "exec": [
                                     "pm.test('Status 200', () => pm.response.to.have.status(200));",
-                                    "pm.test('Currency is CHF', () => pm.expect(pm.response.json()[0].devise).to.equal('CHF'));"
+                                    "pm.test('Currency is EUR', () => pm.expect(pm.response.json()[0].devise).to.equal('EUR'));"
                                 ]
                             }
                         }
@@ -759,7 +759,7 @@
                     }
                 },
                 {
-                    "name": "3.9 Cart — BE Site (CHF currency)",
+                    "name": "3.9 Cart — BE Site (EUR currency)",
                     "event": [
                         {
                             "listen": "test",
@@ -767,7 +767,7 @@
                                 "type": "text/javascript",
                                 "exec": [
                                     "pm.test('Status 200', () => pm.response.to.have.status(200));",
-                                    "pm.test('BE currency = CHF', () => pm.expect(pm.response.json().cart.devise).to.equal('CHF'));"
+                                    "pm.test('BE currency = EUR', () => pm.expect(pm.response.json().cart.devise).to.equal('EUR'));"
                                 ]
                             }
                         }

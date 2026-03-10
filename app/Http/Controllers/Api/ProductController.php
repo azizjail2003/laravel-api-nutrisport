@@ -36,11 +36,7 @@ class ProductController extends Controller
     {
         $priceModel = $product->prices->first();
 
-        $devise = match ($siteCode) {
-            'it' => 'EUR',
-            'be' => 'CHF',
-            default => 'EUR',
-        };
+        $devise = 'EUR';
 
         return [
             'id'          => $product->id,

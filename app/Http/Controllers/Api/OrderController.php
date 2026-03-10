@@ -144,11 +144,7 @@ class OrderController extends Controller
 
     private function formatOrder(Order $order): array
     {
-        $devise = match ($order->site->code ?? 'fr') {
-            'it' => 'EUR',
-            'be' => 'CHF',
-            default => 'EUR',
-        };
+        $devise = 'EUR';
 
         return [
             'id'                 => $order->id,
