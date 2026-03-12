@@ -21,15 +21,15 @@ class ProductController extends Controller
         return response()->json($products);
     }
 
-    public function show(int $id): JsonResponse
+    public function show(string $site, int $id): JsonResponse
     {
-        /** @var \App\Models\Site $site */
-        $site = app('current_site');
+        /** @var \App\Models\Site $currentSite */
+        $currentSite = app('current_site');
 
-        $product = Product::with(['prices' => fn($q) => $q->where('site_id', $site->id)])
+        $product = Product::with(['prices' => fn($q) => $q->where('site_id', $currentSite->id)])
             ->findOrFail($id);
 
-        return response()->json($this->formatProduct($product, $site->id, $site->code));
+        return response()->json($this->formatProduct($product, $currentSite->id, $currentSite->code));
     }
 
     private function formatProduct($product, int $siteId, string $siteCode = 'fr'): array

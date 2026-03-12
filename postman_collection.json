@@ -52,6 +52,10 @@
                             {
                                 "key": "Accept",
                                 "value": "application/json"
+                            },
+                            {
+                                "key": "X-Cart-Token",
+                                "value": "postman-test-fr"
                             }
                         ],
                         "url": {
@@ -90,6 +94,10 @@
                             {
                                 "key": "Accept",
                                 "value": "application/json"
+                            },
+                            {
+                                "key": "X-Cart-Token",
+                                "value": "postman-test-fr"
                             }
                         ],
                         "url": {

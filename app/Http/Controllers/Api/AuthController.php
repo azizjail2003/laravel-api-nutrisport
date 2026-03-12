@@ -42,6 +42,8 @@ class AuthController extends Controller
 
         $token = $this->guard()->login($user);
 
+        $this->mergeCart($request, $user);
+
         return $this->respondWithToken($token, 201);
     }
 
@@ -64,6 +66,8 @@ class AuthController extends Controller
         if (!$token = $this->guard()->attempt($credentials)) {
             return response()->json(['message' => 'Identifiants incorrects.'], 401);
         }
+
+        $this->mergeCart($request, $this->guard()->user());
 
         return $this->respondWithToken($token);
     }
@@ -101,6 +105,34 @@ class AuthController extends Controller
     {
         $this->guard()->logout();
         return response()->json(['message' => 'Déconnecté avec succès.']);
+    }
+
+    private function mergeCart(Request $request, User $user): void
+    {
+        /** @var \App\Models\Site $site */
+        $site = app('current_site');
+
+        $sessionKey = 'cart_session_' . $request->header('X-Cart-Token', $request->ip() . '_' . $site->id);
+        $userKey = 'cart_user_' . $user->id . '_site_' . $site->id;
+
+        $sessionCart = \Illuminate\Support\Facades\Cache::get($sessionKey, []);
+        
+        if (empty($sessionCart)) {
+            return;
+        }
+
+        $userCart = \Illuminate\Support\Facades\Cache::get($userKey, []);
+
+        foreach ($sessionCart as $productId => $entry) {
+            if (isset($userCart[$productId])) {
+                $userCart[$productId]['quantity'] += $entry['quantity'];
+            } else {
+                $userCart[$productId] = $entry;
+            }
+        }
+
+        \Illuminate\Support\Facades\Cache::put($userKey, $userCart, now()->addDays(3));
+        \Illuminate\Support\Facades\Cache::forget($sessionKey);
     }
 
     private function respondWithToken(string $token, int $status = 200): JsonResponse
