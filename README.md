@@ -19,7 +19,8 @@
 - **Prise de Commandes** : Processus d'achat sécurisé, génération de tickets, décrémentation des stocks (`lockForUpdate`), envois d'emails asynchrones et notifications en temps réel (via Laravel Reverb / Pusher).
 - **Authentification JWT Intégrale** : Accès sécurisés via JSON Web Tokens, séparant les clients (Frontend, TTL 6h) et les agents (BackOffice, TTL 8h).
 - **BackOffice Avancé** : Gestion granulaire des rôles (`view_orders`, `create_products`) pour les agents administratifs.
-- **Tâches Planifiées & Flux** : Génération de rapports analytiques quotidiens et exports automatiques (XML/JSON).
+- **Tâches Planifiées & Flux** : Génération de rapports analytiques quotidiens (`php artisan nutrisport:daily-report`) à minuit.
+- **Flux de Données** : Exports automatiques et extensibles (XML/JSON) pour les partenaires.
 
 ---
 
@@ -76,7 +77,7 @@ Toutes les routes publiques clients sont préfixées par `/api/{site}` où `{sit
 - `POST /api/{site}/register` : Créer un compte.
 - `POST /api/{site}/login` : Obtenir un jeton JWT.
 - `POST /api/{site}/logout` : Se déconnecter et révoquer le jeton JWT *(Auth requise)*.
-- `GET  /api/{site}/me` : Consulter son profil *(Auth requise)*.
+- `GET  /api/{site}/me` : Consulter son profil *(Auth requise, TTL 6h)*.
 - `PUT  /api/{site}/profile` : Mettre à jour ses informations personnelles *(Auth requise)*.
 
 ### Catalogue & Panier (Accès Libre)
