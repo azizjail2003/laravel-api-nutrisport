@@ -16,8 +16,8 @@ class AgentAuthController extends Controller
             'password' => 'required|string',
         ]);
 
-        // Agent guard uses 8h TTL (configured in jwt.php via guard setting)
-        if (!$token = auth('api_agent')->attempt($request->only('email', 'password'))) {
+        // Agent guard uses 8h TTL (480 minutes)
+        if (!$token = auth('api_agent')->setTTL(480)->attempt($request->only('email', 'password'))) {
             return response()->json(['message' => 'Identifiants incorrects.'], 401);
         }
 
